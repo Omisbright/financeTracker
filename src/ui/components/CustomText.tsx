@@ -1,24 +1,21 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Text, TextStyle, View} from 'react-native';
 import {customTextStyles} from '../styles';
 
 interface CustomTextProps {
-  label: string;
-  value: Date;
+  children: any;
+  customstyle?: TextStyle;
 }
-const CustomTextInput = (Props: CustomTextProps) => {
-  const {label, value} = Props;
+const CustomText = (Props: CustomTextProps) => {
+  const {children, customstyle} = Props;
 
   return (
     <>
-      <Text>{label}</Text>
-      <View style={customTextStyles.container}>
-        <Text style={customTextStyles.topLabel}>
-          {new Date(value).toLocaleDateString()}
-        </Text>
+      <View>
+        <Text style={[customTextStyles.topLabel, customstyle]}>{children}</Text>
       </View>
     </>
   );
 };
 
-export default CustomTextInput;
+export default CustomText;

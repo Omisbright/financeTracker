@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, TextInput, TextStyle, View} from 'react-native';
-import {customTextStyles} from '../styles';
+import {customTextInputStyles} from '../styles';
 
 interface CustomTextProps {
   label: string;
@@ -13,12 +13,13 @@ const CustomTextInput = (Props: CustomTextProps) => {
   const {customStyles, label, input, placeholder, setInput} = Props;
   return (
     <View>
-      <Text style={customTextStyles.topLabel}>{label}</Text>
+      <Text style={customTextInputStyles.topLabel}>{label}</Text>
       <TextInput
         value={input}
         onChangeText={setInput}
+        placeholderTextColor="#cccccc"
         placeholder={placeholder}
-        style={[customTextStyles.container, customStyles]}
+        style={[customTextInputStyles.container, customStyles]}
       />
     </View>
   );

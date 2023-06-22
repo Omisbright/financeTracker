@@ -1,15 +1,23 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import {useFocusEffect} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 import {getTransactions} from '../../database/Database';
-import {formatAmount} from '../../utils/utility';
+import {
+  formatAmount,
+  calculateBalance,
+  getDateRange,
+  generateReport,
+  filterTransactions,
+} from '../../utils/utility';
 import CustomText from '../components/CustomText';
+import CustomDateText from '../components/CustomDateText';
 import DaySelection from '../components/DaySelection';
+import Layout from '../components/Layout';
 import TransactionComponent from '../components/TransactionComponent';
 import {balanceAndTransactionCounterStyles} from '../styles';
 
-interface Transaction {
+export interface Transaction {
   id: number;
   name: string;
   amount: string;
@@ -33,72 +41,6 @@ const BalanceAndTransactionCountScreen = () => {
     setModifiedTransactions(transactions);
   }, [transactions]);
 
-  function filterTransactions(
-    transactions: Transaction[],
-    startDate: Date,
-    endDate: Date,
-  ) {
-    startDate.setHours(0, 0, 0, 0);
-    endDate.setHours(23, 59, 59, 999);
-
-    return transactions.filter((transaction: {date: string}) => {
-      const transactionDate = new Date(Date.parse(transaction.date));
-
-      // Check if the transactionDate is a valid Date object
-      if (isNaN(transactionDate.getTime())) {
-        throw new Error('Invalid date format in transactions');
-      }
-
-      return transactionDate >= startDate && transactionDate <= endDate;
-    });
-  }
-
-  function generateReport(transactions: any[]) {
-    let balance = 0;
-    let transactionCount = 0;
-
-    transactions.forEach((transaction: {amount: number}) => {
-      balance += transaction.amount;
-      transactionCount++;
-    });
-
-    return {
-      balance: balance.toFixed(2),
-      transactionCount: transactionCount,
-    };
-  }
-
-  function getDateRange(filterType: string) {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-
-    const lastWeek = new Date(today);
-    lastWeek.setDate(today.getDate() - 7);
-
-    const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-    const allTimeStart = new Date(0);
-
-    switch (filterType) {
-      case 'Today':
-        const startOfDay = new Date(today);
-        startOfDay.setHours(0, 0, 0, 0);
-        const endOfDay = new Date(today);
-        endOfDay.setHours(23, 59, 59, 999);
-        return {startDate: startOfDay, endDate: endOfDay};
-      case 'Yesterday':
-        return {startDate: yesterday, endDate: yesterday};
-      case 'Last Week':
-        return {startDate: lastWeek, endDate: today};
-      case 'This Month':
-        return {startDate: thisMonthStart, endDate: today};
-      case 'All Time':
-        return {startDate: allTimeStart, endDate: today};
-      default:
-        throw new Error('Invalid filter type');
-    }
-  }
-
   function generateFilteredReport(
     transactions: Transaction[],
     filterType: string,
@@ -115,58 +57,52 @@ const BalanceAndTransactionCountScreen = () => {
     return generateReport(filteredTransactions);
   }
 
-  const calculateBalance = (): number => {
-    let income = 0;
-    let expense = 0;
-    transactions.forEach((modifiedTransactions: Transaction) => {
-      if (modifiedTransactions.type === 'income') {
-        income += parseFloat(modifiedTransactions.amount);
-      } else if (modifiedTransactions.type === 'expense') {
-        expense += parseFloat(modifiedTransactions.amount);
-      }
-    });
-    return income - expense;
-  };
-
-  console.log('modifiedTransactions', modifiedTransactions);
   return (
-    <View style={balanceAndTransactionCounterStyles.container}>
-      <CustomText label={'Start date'} value={startDate} />
+    <Layout>
+      <View style={balanceAndTransactionCounterStyles.container}>
+        <CustomDateText label={'Start date'} value={startDate} />
+        <CustomDateText label={'End date'} value={endDate} />
 
-      <CustomText label={'End date'} value={endDate} />
+        <View style={balanceAndTransactionCounterStyles.daySelectionContainer}>
+          <DaySelection
+            label={'Today'}
+            action={() => generateFilteredReport(transactions, 'Today')}
+          />
+          <DaySelection
+            label={'Yesterday'}
+            action={() => generateFilteredReport(transactions, 'Yesterday')}
+          />
+          <DaySelection
+            label={'Last week'}
+            action={() => generateFilteredReport(transactions, 'Last Week')}
+          />
+          <DaySelection
+            label={'This month'}
+            action={() => generateFilteredReport(transactions, 'This Month')}
+          />
+          <DaySelection
+            label={'All time'}
+            action={() => generateFilteredReport(transactions, 'All Time')}
+          />
+        </View>
 
-      <View style={balanceAndTransactionCounterStyles.daySelectionContainer}>
-        <DaySelection
-          label={'Today'}
-          action={() => generateFilteredReport(transactions, 'Today')}
-        />
-        <DaySelection
-          label={'Yesterday'}
-          action={() => generateFilteredReport(transactions, 'Yesterday')}
-        />
-        <DaySelection
-          label={'Last week'}
-          action={() => generateFilteredReport(transactions, 'Last Week')}
-        />
-        <DaySelection
-          label={'This month'}
-          action={() => generateFilteredReport(transactions, 'This Month')}
-        />
-        <DaySelection
-          label={'All time'}
-          action={() => generateFilteredReport(transactions, 'All Time')}
+        {/* eslint-disable-next-line react-native/no-inline-styles */}
+        <View style={{marginVertical: 10}}>
+          <CustomText>
+            Balance: {formatAmount(calculateBalance(transactions))}
+          </CustomText>
+          <CustomText>
+            Transaction Count: {modifiedTransactions.length}
+          </CustomText>
+        </View>
+
+        <FlatList
+          data={modifiedTransactions || transactions}
+          renderItem={({item}) => <TransactionComponent item={item} />}
+          keyExtractor={(item: Transaction) => item.id.toString()}
         />
       </View>
-
-      <Text>Balance: {formatAmount(calculateBalance())}</Text>
-      <Text>Transaction Count: {modifiedTransactions.length}</Text>
-
-      <FlatList
-        data={modifiedTransactions || transactions}
-        renderItem={({item}) => <TransactionComponent item={item} />}
-        keyExtractor={(item: Transaction) => item.id.toString()}
-      />
-    </View>
+    </Layout>
   );
 };
 

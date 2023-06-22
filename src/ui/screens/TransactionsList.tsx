@@ -1,12 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {Button, FlatList, View} from 'react-native';
-import {getTransactions, createTables} from '../../database/Database';
-import {AppProps} from '../../navigation/types';
-import {transactionListStyles} from '../styles';
-import TransactionComponent from '../components/TransactionComponent';
 import {useFocusEffect} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {TouchableOpacity} from 'react-native';
+import {FlatList, View} from 'react-native';
+import {createTables, getTransactions} from '../../database/Database';
+import {AppProps} from '../../navigation/types';
+import CustomText from '../components/CustomText';
+import TransactionComponent from '../components/TransactionComponent';
+import {transactionListStyles} from '../styles';
 
-interface Transaction {
+export interface Transaction {
   id: number;
   name: string;
   amount: string;
@@ -35,14 +37,24 @@ const TransactionsList: React.FC<AppProps<'TransactionsList'>> = ({
         renderItem={({item}) => <TransactionComponent item={item} />}
         keyExtractor={item => item.id.toString()}
       />
-      <Button
-        title="Add Transaction"
-        onPress={() => navigation.navigate('RecordTransactions')}
-      />
-      <Button
-        title="View Balance Report"
-        onPress={() => navigation.navigate('BalanceAndTransactionCountScreen')}
-      />
+      <View style={transactionListStyles.buttonContainer}>
+        <TouchableOpacity
+          style={transactionListStyles.button}
+          onPress={() => navigation.navigate('RecordTransactions')}>
+          <CustomText customstyle={transactionListStyles.buttonText}>
+            Add Transaction
+          </CustomText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={transactionListStyles.button}
+          onPress={() =>
+            navigation.navigate('BalanceAndTransactionCountScreen')
+          }>
+          <CustomText customstyle={transactionListStyles.buttonText}>
+            View Balance Report
+          </CustomText>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
