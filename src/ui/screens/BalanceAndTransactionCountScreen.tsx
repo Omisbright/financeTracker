@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import {useFocusEffect} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {FlatList, View} from 'react-native';
 import {getTransactions} from '../../database/Database';
 import {
@@ -33,13 +33,12 @@ const BalanceAndTransactionCountScreen = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-      getTransactions(setTransactions);
+      getTransactions(fetchedTransactions => {
+        setTransactions(fetchedTransactions);
+        setModifiedTransactions(fetchedTransactions);
+      });
     }, []),
   );
-
-  useEffect(() => {
-    setModifiedTransactions(transactions);
-  }, [transactions]);
 
   function generateFilteredReport(
     transactions: Transaction[],

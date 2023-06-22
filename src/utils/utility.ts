@@ -88,17 +88,15 @@ export function filterTransactions(
   startDate: Date,
   endDate: Date,
 ) {
-  startDate.setHours(0, 0, 0, 0);
-  endDate.setHours(23, 59, 59, 999);
+  const startDay = startDate.toISOString().substring(0, 10);
+  const endDay = endDate.toISOString().substring(0, 10);
 
   return transactions.filter((transaction: {date: string}) => {
-    const transactionDate = new Date(Date.parse(transaction.date));
+    const transactionDate = transaction.date;
 
-    // Check if the transactionDate is a valid Date object
-    if (isNaN(transactionDate.getTime())) {
-      throw new Error('Invalid date format in transactions');
+    if (transactionDate >= startDay && transactionDate <= endDay) {
+      return true;
     }
-
-    return transactionDate >= startDate && transactionDate <= endDate;
+    return false;
   });
 }

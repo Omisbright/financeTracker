@@ -5,12 +5,16 @@ export const transactionListStyles = StyleSheet.create({
   amount: {
     fontWeight: '400',
     fontSize: RFValue(12),
+    color: '#000',
   },
   button: {
     marginVertical: RFValue(10),
     backgroundColor: 'dodgerblue',
     padding: RFValue(10),
     borderRadius: 4,
+    width: '80%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonContainer: {
     justifyContent: 'center',
@@ -22,6 +26,7 @@ export const transactionListStyles = StyleSheet.create({
   date: {
     fontWeight: '300',
     fontSize: RFValue(10),
+    color: '#000',
   },
   container: {
     flex: 1,
@@ -102,6 +107,7 @@ export const datePickerStyles = StyleSheet.create({
     height: RFValue(50),
     borderRadius: 4,
     backgroundColor: '#fff',
+    color: '#000',
     borderWidth: 0.8,
     borderBottomWidth: 0.8,
     borderColor: '#777777',
@@ -112,14 +118,16 @@ export const datePickerStyles = StyleSheet.create({
     fontSize: RFValue(10),
     marginTop: RFValue(5),
     fontWeight: '400',
+    color: '#000',
   },
   label: {
     fontSize: RFValue(10),
-    // fontWeight: '200',
+    color: '#000',
   },
   topLabel: {
     fontSize: RFValue(10),
     fontWeight: '200',
+    color: '#000',
   },
 });
 
@@ -147,6 +155,7 @@ export const itemPickerStyles = StyleSheet.create({
   topLabel: {
     fontSize: RFValue(10),
     fontWeight: '200',
+    color: '#000',
   },
 });
 
@@ -164,10 +173,12 @@ export const customDateTextStyles = StyleSheet.create({
     paddingHorizontal: 10,
     fontWeight: '400',
     justifyContent: 'center',
+    color: '#000',
   },
   topLabel: {
     fontSize: RFValue(10),
     fontWeight: '200',
+    color: '#000',
   },
 });
 
@@ -192,14 +203,17 @@ export const customTextInputStyles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingHorizontal: 10,
     fontWeight: '400',
+    color: '#000',
   },
   placeholderText: {
     fontSize: RFValue(10),
     fontWeight: '200',
+    color: '#000',
   },
   topLabel: {
     fontSize: RFValue(10),
     fontWeight: '200',
+    color: '#000',
   },
 });
 
@@ -223,10 +237,12 @@ export const dayPickerStyles = StyleSheet.create({
     fontSize: RFValue(10),
     fontWeight: '400',
     textAlign: 'center',
+    color: '#000',
   },
   topLabel: {
     fontSize: RFValue(10),
     fontWeight: '200',
+    color: '#000',
   },
 });
 

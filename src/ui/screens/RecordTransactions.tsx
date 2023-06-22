@@ -33,7 +33,7 @@ const RecordTransactions: React.FC<AppProps<'RecordTransactions'>> = ({
       return;
     }
 
-    const formattedDate = dayjs(date).format('DD-MM-YYYY');
+    const formattedDate = dayjs(date).format('YYYY-MM-DD');
     console.log(new Date(formattedDate));
     insertTransaction(
       name,
@@ -56,6 +56,7 @@ const RecordTransactions: React.FC<AppProps<'RecordTransactions'>> = ({
         <CustomTextInput
           label={'Amount'}
           input={amount}
+          keyboardType="numeric"
           setInput={(value: string) => setAmount(value)}
           placeholder={'e.g 1000, 20000'}
         />
